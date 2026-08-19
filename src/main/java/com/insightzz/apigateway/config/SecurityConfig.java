@@ -10,6 +10,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+
 @Configuration
 public class SecurityConfig {
 
@@ -18,6 +21,13 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+
+                // =================================================
+                // CORS
+                // =================================================
+
+                .cors(Customizer.withDefaults())
+
 
                 // =================================================
                 // CSRF
@@ -43,38 +53,27 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // -----------------------------------------
-                        // Gateway actuator
-                        // -----------------------------------------
+                        // CORS preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
 
+                        // Gateway actuator
                         .requestMatchers(
                                 "/actuator/health",
                                 "/actuator/info"
                         ).permitAll()
 
-
-                        // -----------------------------------------
-                        // LOGIN
-                        // -----------------------------------------
-
+                        // Login
                         .requestMatchers(
                                 "/api/v1/auth/login"
                         ).permitAll()
 
-
-                        // -----------------------------------------
                         // User service health
-                        // -----------------------------------------
-
                         .requestMatchers(
                                 "/api/v1/users/health"
                         ).permitAll()
 
-
-                        // -----------------------------------------
                         // Everything else requires JWT
-                        // -----------------------------------------
-
                         .anyRequest().authenticated()
                 )
 
