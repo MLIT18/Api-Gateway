@@ -29,4 +29,20 @@ public class GatewayRouteConfig {
 
                 .build();
     }
+    @Bean
+    public RouterFunction<ServerResponse> clientServiceRoute() {
+
+        return GatewayRouterFunctions.route("client-service")
+
+                .route(
+                        path("/api/v1/clients/**"),
+                        http()
+                )
+
+                .before(
+                        uri("http://localhost:9083")
+                )
+
+                .build();
+    }
 }
