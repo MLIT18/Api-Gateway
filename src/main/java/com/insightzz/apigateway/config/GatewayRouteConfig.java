@@ -22,6 +22,10 @@ public class GatewayRouteConfig {
                         path("/api/v1/users/**"),
                         http()
                 )
+                .route(
+                        path("/api/v1/roles/**"),
+                        http()
+                )
 
                 .before(
                         uri("http://localhost:9082")
@@ -41,6 +45,23 @@ public class GatewayRouteConfig {
 
                 .before(
                         uri("http://localhost:9083")
+                )
+
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> projectServiceRoute() {
+
+        return GatewayRouterFunctions.route("project-service")
+
+                .route(
+                        path("/api/v1/projects/**"),
+                        http()
+                )
+
+                .before(
+                        uri("http://localhost:9084")
                 )
 
                 .build();
